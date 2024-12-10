@@ -5,51 +5,138 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class App {
+    
+    
     public static void main(String[] args) throws Exception {
         String fileName = "src\\Problem 2.txt"; 
-        ArrayList<Boolean> answerList = readNumbersFromFile(fileName);
+        ArrayList<Boolean> answerList = multiplicationReader(fileName);
         int answer = 0;
         for (Boolean b : answerList) if (b) answer++;
 
         System.out.println("Part 1: " + answer);
         // System.out.println("Part 2: " + answer1);
     }
-
-    public static ArrayList<Boolean> readNumbersFromFile(String fileName) {
-        ArrayList<Boolean> trues = new ArrayList<Boolean>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                ArrayList<Integer> numbers = new ArrayList<Integer>();
-                int lastIndex = 0;
-                boolean safe = true;
-                int space = line.indexOf(' ', lastIndex);
-                while (space != -1){
-                    String l = line.substring(lastIndex, space);
-                    numbers.add(Integer.parseInt(l));
-                    lastIndex = space + 1;
-                    space = line.indexOf(" ", lastIndex);
+    public static ArrayList<Integer> multiplicationReader(String fileName){
+        ArrayList<Integer> numbers = new ArrayList<Integer>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))){
+            char c = ' ';
+            while ((c = reader.read()) != -1){
+                if (c == 'm'){
+                    
                 }
-                System.out.println(numbers.size());
-                int i = 0;
-                boolean increasing = numbers.get(i) < numbers.get(i+1);
-                while (i < numbers.size()-1) {
-                    if (between1and3(numbers.get(i), numbers.get(i+1)) && increasing == numbers.get(i) < numbers.get(i+1)){
-                        safe = false; break;
-                    }
-                    i++;
-                }
-                trues.add(safe);
             }
-        } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+
+        } catch (Exception e) {
+            System.out.println("Exception while reading " + e.getMessage());
         }
-        // System.out.println(trues.size());
-        return trues;
+        
+
+        return numbers;
     }
-    public static boolean between1and3(Integer left, Integer right){
-        return Math.abs(left - right) < 4 && Math.abs(left-right) > 0;
-    }
+
+    
+    ////////////////////////////////////Problem 2/////////////////////////////////////////
+    // public static void main(String[] args) throws Exception {
+    //     String fileName = "src\\Problem 2.txt"; 
+    //     ArrayList<Boolean> answerList = readNumbersFromFile2(fileName);
+    //     int answer = 0;
+    //     for (Boolean b : answerList) if (b) answer++;
+
+    //     System.out.println("Part 1: " + answer);
+    //     // System.out.println("Part 2: " + answer1);
+    // }
+
+    // public static ArrayList<Boolean> readNumbersFromFile(String fileName) {
+    //     ArrayList<Boolean> trues = new ArrayList<Boolean>();
+    //     try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+    //         String line;
+    //         while ((line = reader.readLine()) != null) {
+    //             ArrayList<Integer> numbers = new ArrayList<Integer>();
+    //             int lastIndex = 0;
+    //             boolean safe = true;
+    //             int space = line.indexOf(' ', lastIndex);
+    //             while (space != -1){
+    //                 String l = line.substring(lastIndex, space);
+    //                 numbers.add(Integer.parseInt(l));
+    //                 lastIndex = space + 1;
+    //                 space = line.indexOf(" ", lastIndex);
+    //             }
+    //             numbers.add(Integer.parseInt(line.substring(lastIndex)));
+    //             // System.out.println(numbers.size()); works fine
+    //             int i = 0;
+    //             boolean increasing = numbers.get(i) < numbers.get(i+1);
+    //             while (i < numbers.size()-1) {
+    //                 if (between1and3(numbers.get(i), numbers.get(i+1), increasing)){
+    //                     safe = false; 
+    //                     break;
+    //                 }
+    //                 i++;
+    //                 // System.out.print(i + " : ");
+    //                 // System.out.println(numbers.size());
+    //             }
+    //             // System.out.println(safe);
+    //             trues.add(safe);
+    //         }
+    //     } catch (IOException e) {
+    //         System.err.println("Error reading file: " + e.getMessage());
+    //     }
+    //     // System.out.println(trues.size());
+    //     return trues;
+    // }
+    // public static ArrayList<Boolean> readNumbersFromFile2(String fileName) {
+    //     ArrayList<Boolean> trues = new ArrayList<Boolean>();
+    //     try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+    //         String line;
+    //         while ((line = reader.readLine()) != null) {
+    //             ArrayList<Integer> numbers = new ArrayList<Integer>();
+    //             int lastIndex = 0;
+    //             boolean safe = false;
+    //             int space = line.indexOf(' ', lastIndex);
+    //             while (space != -1){
+    //                 String l = line.substring(lastIndex, space);
+    //                 numbers.add(Integer.parseInt(l));
+    //                 lastIndex = space + 1;
+    //                 space = line.indexOf(" ", lastIndex);
+    //             }
+    //             numbers.add(Integer.parseInt(line.substring(lastIndex)));
+    //             // System.out.println(numbers.size()); works fine
+
+    //             for (int index = 0; index < numbers.size(); index++) {
+    //                 Integer num = numbers.get(index);
+    //                 numbers.remove(index);
+    //                 if (works(numbers)){
+    //                     safe = true;
+    //                     break;
+    //                 }
+    //                 numbers.add(index, num);
+    //             }
+                
+    //             trues.add(safe);
+    //         }
+    //     } catch (IOException e) {
+    //         System.err.println("Error reading file: " + e.getMessage());
+    //     }
+    //     // System.out.println(trues.size());
+    //     return trues;
+    // }
+
+    // public static boolean works(ArrayList<Integer> numbers){
+    //     boolean safe = true;
+    //     int i = 0;
+    //     boolean increasing = numbers.get(i) < numbers.get(i+1);
+    //     while (i < numbers.size()-1) {
+    //         if (between1and3(numbers.get(i), numbers.get(i+1), increasing)){
+    //             safe = false; 
+    //             break;
+    //         }
+    //         i++;
+    //     }
+    //     return safe;
+    // }
+
+    // public static boolean between1and3(Integer left, Integer right, Boolean increase){
+    //     return !(Math.abs(left - right) <= 3 && Math.abs(left-right) >= 1) || increase != (left < right);
+    // }
 
 
 
