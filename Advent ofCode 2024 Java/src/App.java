@@ -5,26 +5,61 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class App {
-    
-    
     public static void main(String[] args) throws Exception {
-        String fileName = "src\\Problem 2.txt"; 
-        ArrayList<Boolean> answerList = multiplicationReader(fileName);
+        String fileName = "src\\Problem 3.txt"; 
+        ArrayList<Integer> answerList = multiplicationReader(fileName);
         int answer = 0;
-        for (Boolean b : answerList) if (b) answer++;
+        for (Integer integer : answerList) {
+            System.out.println(integer);
+        }
+        for (Integer integer : answerList) {
+            answer+=integer;
+        }
 
         System.out.println("Part 1: " + answer);
         // System.out.println("Part 2: " + answer1);
     }
-    public static ArrayList<Integer> multiplicationReader(String fileName){
+    public static ArrayList<Integer> multiplicationReader2(String fileName){
         ArrayList<Integer> numbers = new ArrayList<Integer>();
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))){
-            char c = ' ';
-            while ((c = reader.read()) != -1){
-                if (c == 'm'){
-                    
+            int c = 0;
+            c = reader.readline();
+            // System.out.println(c);
+            while (c != -1){
+                if (c == (int)'m'){
+                    c = reader.read();
+                    if(c == (int)'u'){
+                        c = reader.read();  
+                        if (c == (int)'l') {
+                            c = reader.read();
+                            if (c == (int)'(') {
+                                int number = 0;
+                                c = reader.read();
+                                while (c > 47 && c < 58){
+                                    System.out.println(c);
+                                    number = number*10 + c-48;
+                                    c = reader.read();
+                                }
+                                
+                                if (c == (int)',') {
+                                    int number2 = 0;
+                                    c = reader.read();
+                                    while (c > 47 && c < 58){
+                                        number2 = number2*10 + c-48;
+                                        c = reader.read();
+                                    }
+                                    if (c == (int)')'){
+                                        numbers.add(number*number2);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
+                c = reader.read();
             }
+            System.out.println(numbers.size());
+            return numbers;
 
         } catch (Exception e) {
             System.out.println("Exception while reading " + e.getMessage());
@@ -33,6 +68,55 @@ public class App {
 
         return numbers;
     }
+    // public static ArrayList<Integer> multiplicationReader(String fileName){
+    //     ArrayList<Integer> numbers = new ArrayList<Integer>();
+    //     try (BufferedReader reader = new BufferedReader(new FileReader(fileName))){
+    //         int c = 0;
+    //         c = reader.read();
+    //         // System.out.println(c);
+    //         while (c != -1){
+    //             if (c == (int)'m'){
+    //                 c = reader.read();
+    //                 if(c == (int)'u'){
+    //                     c = reader.read();  
+    //                     if (c == (int)'l') {
+    //                         c = reader.read();
+    //                         if (c == (int)'(') {
+    //                             int number = 0;
+    //                             c = reader.read();
+    //                             while (c > 47 && c < 58){
+    //                                 System.out.println(c);
+    //                                 number = number*10 + c-48;
+    //                                 c = reader.read();
+    //                             }
+                                
+    //                             if (c == (int)',') {
+    //                                 int number2 = 0;
+    //                                 c = reader.read();
+    //                                 while (c > 47 && c < 58){
+    //                                     number2 = number2*10 + c-48;
+    //                                     c = reader.read();
+    //                                 }
+    //                                 if (c == (int)')'){
+    //                                     numbers.add(number*number2);
+    //                                 }
+    //                             }
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //             c = reader.read();
+    //         }
+    //         System.out.println(numbers.size());
+    //         return numbers;
+
+    //     } catch (Exception e) {
+    //         System.out.println("Exception while reading " + e.getMessage());
+    //     }
+        
+
+    //     return numbers;
+    // }
 
     
     ////////////////////////////////////Problem 2/////////////////////////////////////////
