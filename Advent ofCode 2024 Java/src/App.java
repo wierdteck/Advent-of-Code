@@ -7,7 +7,7 @@ import java.util.Collections;
 public class App {
     public static void main(String[] args) throws Exception {
         String fileName = "src\\Problem 3.txt"; 
-        ArrayList<Integer> answerList = multiplicationReader(fileName);
+        ArrayList<Integer> answerList = multiplicationReader2(fileName);
         int answer = 0;
         for (Integer integer : answerList) {
             System.out.println(integer);
@@ -22,43 +22,52 @@ public class App {
     public static ArrayList<Integer> multiplicationReader2(String fileName){
         ArrayList<Integer> numbers = new ArrayList<Integer>();
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))){
-            int c = 0;
-            c = reader.readline();
-            // System.out.println(c);
-            while (c != -1){
-                if (c == (int)'m'){
-                    c = reader.read();
-                    if(c == (int)'u'){
-                        c = reader.read();  
-                        if (c == (int)'l') {
-                            c = reader.read();
-                            if (c == (int)'(') {
-                                int number = 0;
-                                c = reader.read();
-                                while (c > 47 && c < 58){
-                                    System.out.println(c);
-                                    number = number*10 + c-48;
-                                    c = reader.read();
-                                }
-                                
-                                if (c == (int)',') {
-                                    int number2 = 0;
-                                    c = reader.read();
-                                    while (c > 47 && c < 58){
-                                        number2 = number2*10 + c-48;
-                                        c = reader.read();
-                                    }
-                                    if (c == (int)')'){
-                                        numbers.add(number*number2);
-                                    }
-                                }
+            String line;
+            boolean doRead = true;
+            while ((line = reader.readLine()) != null) {
+                int i = 0;
+                while (i < line.length()) {
+                    if ((i < line.length() - 8) && line.substring(i, i+7).equals("don't()")) {
+                        i+=7;
+                        doRead = false;
+                        continue;
+                    }
+                    if((i < line.length() - 5) && line.substring(i, i+4).equals("do()")){
+                        doRead = true;
+                        i+=4;
+                        continue;
+                    }
+                    if(i < line.length()-5 && doRead && line.substring(i, i+4).equals("mul(")){
+                        i+=4;
+                        int c = 0;
+                        int number = 0;
+                        c = (int)line.charAt(i);
+                        i++;
+                        while (c > 47 && c < 58){
+                            // System.out.println(c);
+                            number = number*10 + c-48;
+                            c = (int)line.charAt(i);
+                            i++;
+                        }
+                        if (c == (int)',') {
+                            int number2 = 0;
+                            c = (int)line.charAt(i);
+                            i++;
+                            while (c > 47 && c < 58){
+                                number2 = number2*10 + c-48;
+                                c = (int)line.charAt(i);
+                                i++;
+                            }
+                            if (c == (int)')'){
+                                numbers.add(number*number2);
                             }
                         }
                     }
+                    i++;
                 }
-                c = reader.read();
             }
-            System.out.println(numbers.size());
+            
+            // System.out.println(numbers.size());
             return numbers;
 
         } catch (Exception e) {
