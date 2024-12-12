@@ -6,7 +6,7 @@ import java.util.Collections;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        String fileName = "src\\Problem 3.txt"; 
+        String fileName = "Advent ofCode 2024 Java\\src\\Problem 3.txt"; 
         ArrayList<Integer> answerList = multiplicationReader2(fileName);
         int answer = 0;
         for (Integer integer : answerList) {
@@ -59,9 +59,11 @@ public class App {
                                 i++;
                             }
                             if (c == (int)')'){
+                                System.out.println(number*number2);
                                 numbers.add(number*number2);
                             }
                         }
+                        continue;
                     }
                     i++;
                 }
