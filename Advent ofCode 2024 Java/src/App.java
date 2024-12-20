@@ -29,67 +29,192 @@ public class App {
         return contentBuilder.toString();
     }
     
-    public static void main(String[] args) throws Exception {
-        Long.parseLong("40541461584");
-        String fileName = "Advent ofCode 2024 Java\\src\\test.txt"; 
-        long answer1 = 0;
+    public static void main(String[] args) throws Exception{
+        String fileName = "Advent ofCode 2024 Java\\src\\Problem 9.txt";
         String file = readF(fileName);
-        Map<Long, ArrayList<Long>> dict = makeDict(file);
-        for (Map.Entry<Long, ArrayList<Long>> entry : dict.entrySet()) {
-            long goal = entry.getKey();
-            long transfer = entry.getValue().remove(0);
-            // if (transfer == goal) {
-            //     System.out.println("hmmmm");
-            // }
-            if (works(goal, entry.getValue(), transfer)) {
-                answer1 += goal;
+        ArrayList<Integer> numbers = new ArrayList<Integer>();
+        int cur = 0;
+        for (int i = 0; i < file.length()-1; i++){
+            String sub = file.substring(i, i+1);
+            int num = Integer.parseInt(sub);
+            if(i%2==0){
+                for (int j = 0; j<num; j++) numbers.add(cur);
+                cur++;
             }
+            else for (int j = 0; j < num; j++) numbers.add(-1);
         }
-        // System.out.println(dict.size());
+        // System.out.println(numbers);
+        int i = 0;
+        while (i < numbers.size()){
+            if(numbers.get(i) == -1){
+                while (numbers.get(numbers.size()-1) == -1){
+                    if (i == numbers.size()-1) break;
+                    numbers.remove(numbers.size()-1);
+                }
+                numbers.set(i, numbers.get(numbers.size()-1));
+                numbers.remove(numbers.size()-1);
+            }
+            i++;
+        }
+        // System.out.println(numbers);
+        int answer = 0; 
+        for (int j = 0; j < numbers.size(); j++){
+            answer+=numbers.get(j)*j;
+        }
+        System.out.println(answer);
+
+    }
+
+    ///////////////////Problem 8////////////////////////////
+    // public static void main(String[] args) throws Exception {
+    //     String fileName = "Advent ofCode 2024 Java\\src\\Problem 8.txt"; 
+    //     String file = readF(fileName);
+    //     int size = file.indexOf('\n');
+    //     Map<Integer, ArrayList<Integer>> dict = makeDict(file, size);
+    //     System.out.println(dict);
+    //     Set<Integer> points = new HashSet<Integer>();
+
+    //     for (Map.Entry<Integer, ArrayList<Integer>> entry : dict.entrySet()) {
+    //         //get the x coordinates and get the y coordinates into two different arrays
+    //         ArrayList<Integer> xs = new ArrayList<Integer>();
+    //         ArrayList<Integer> ys = new ArrayList<Integer>();
+    //         boolean even = true;
+    //         for (int i : entry.getValue()) {
+    //             if (even) xs.add(i);
+    //             else ys.add(i);
+    //             even = (even==false);
+    //         }
+
+    //         //check all possible diagonal lines
+    //         for (int i = 0; i < xs.size(); i++){
+    //             for(int j = 0; j < xs.size(); j++){
+    //                 //check if comparisions over
+    //                 if(i == xs.size()-1 && j == xs.size()-1) break;
+    //                 if(j == i) j++;
+                    
+
+    //                 int x1 = xs.get(i);
+    //                 int x2 = xs.get(j);
+    //                 int y1 = ys.get(i);
+    //                 int y2 = ys.get(j);
+    //                 int dx = x2-x1;
+    //                 int dy = y2-y1;
+    //                 int k = 0;
+    //                 while (x2+dx*k < size && y2+dy*k < size && x2+dx*k >= 0 && y2+dy*k >= 0) {
+    //                     points.add((y2+dy*k)*size + (x2+dx*k));
+    //                     k++;
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     //////////helps with debugging
+    //     // char[][] display = new char[size][size];
+    //     // for (int i = 0; i < size; i++) {
+    //     //     for (int j = 0; j < size; j++) {
+    //     //         display[i][j] = '.';
+    //     //     }
+    //     // }
+    //     // for (Integer integer : points) {
+    //     //     display[integer/size][integer%size] = '#';
+    //     //     // System.out.println(integer + ": " +integer%size);
+    //     // }
+    //     // for (int i = 0; i < size;i++){
+    //     //     for (int j=0; j < size; j++){
+    //     //         System.out.print(display[i][j]);
+    //     //     }
+    //     //     System.out.println();
+    //     // }
+        
+    //     System.out.println(points.size());
+    // }
+
+    // private static Map<Integer, ArrayList<Integer>> makeDict(String file, int size){
+    //     Map<Integer, ArrayList<Integer>> dict = new HashMap<>();
+    //     for (int i = 0; i < file.length(); i++) {
+    //         char c = file.charAt(i);
+    //         if (c != '\n' && c != '.'){
+    //             if (dict.get((int)file.charAt(i)) != null) {
+    //                 dict.get((int)file.charAt(i)).add(i%(size+1));
+    //                 dict.get((int)file.charAt(i)).add(i/(size+1));
+    //             }
+    //             else {
+    //                 ArrayList<Integer> newList = new ArrayList<>();
+    //                 newList.add(i%(size+1));
+    //                 newList.add(i/(size+1));
+    //                 dict.put((int)file.charAt(i), newList);
+    //             }
+    //         }
+    //     }
+    //     return dict;
+    // }
+
+    /////////////////////////////Problem 7////////////////////////
+    // public static void main(String[] args) throws Exception {
+    //     Long.parseLong("40541461584");
+    //     String fileName = "Advent ofCode 2024 Java\\src\\test.txt"; 
+    //     long answer1 = 0;
+    //     String file = readF(fileName);
+    //     ArrayList<ArrayList<Long>> dict = makeDict(file);
+    //     for (ArrayList<Long> entry : dict) {
+    //         long goal = entry.remove(0);
+    //         long transfer = entry.remove(0);
+    //         // if (transfer == goal) {
+    //         //     System.out.println("hmmmm");
+    //         // }
+    //         if (works(goal, entry, transfer)) {
+    //             answer1 += goal;
+    //         }
+    //     }
+    //     // System.out.println(dict.size());
         
 
 
-        // int answer2 = printQueue2(fileName);
-        System.out.println("Part 1: " + answer1);
-        // System.out.println("Part 2: " + (answer2 - answer1));
-    }
+    //     // int answer2 = printQueue2(fileName);
+    //     System.out.println("Part 1: " + answer1);
+    //     // System.out.println("Part 2: " + (answer2 - answer1));
+    // }
 
-    private static boolean works(Long goal, ArrayList<Long> values, long current){
-        if (values.size() == 0) {
-            if (current == goal) return true;
-            return false;
-        }
-        long num = values.remove(0);
-        current+=num;
-        if(works(goal, values, current)) return true;
-        current-=num;
-        current*=num;
-        if (current == 42) {
-            System.out.println("here");
-        }
-        if(works(goal, values, current)) return true;
-        current/=num;
-        values.add(0, num);
+    // private static boolean works(Long goal, ArrayList<Long> values, long current){
+    //     if (values.size() == 0) {
+    //         if (current == goal) return true;
+    //         return false;
+    //     }
+    //     long num = values.remove(0);
+    //     current+=num;
+    //     if(works(goal, values, current)) return true;
+    //     current-=num;
+
+    //     current*=num;
+    //     if(works(goal, values, current)) return true;
+    //     current/=num;
+
+    //     Long transfer = current;
+    //     current=Long.parseLong("" + current + num);
+    //     if(works(goal, values, current)) return true;
+    //     current-=transfer;
+
+    //     values.add(0, num);
         
-        return false;
-    }
+    //     return false;
+    // }
 
 
-    private static Map<Long, ArrayList<Long>> makeDict(String file){
-        Map<Long, ArrayList<Long>> dict = new HashMap<>();
-        String[] lines = file.split("\n");
-        for (String line : lines) {
-            String[] parts = line.split(": ");
-            String[] index = parts[1].split(" ");
-            ArrayList<Long> values = new ArrayList<>();
-            // for(int i = 0; i<index.length;i++) System.out.println(index[i]);
-            for (String value : index) {
-                values.add(Long.parseLong(value.trim()));
-            }
-            dict.put(Long.parseLong(parts[0].trim()),     values);
-        }
-        return dict;
-    }
+    // private static ArrayList<ArrayList<Long>> makeDict(String file){
+    //     ArrayList<ArrayList<Long>> dict = new ArrayList<ArrayList<Long>>();
+    //     String[] lines = file.split("\n");
+    //     for (String line : lines) {
+    //         String[] parts = line.split(": ");
+    //         String[] index = parts[1].split(" ");
+    //         ArrayList<Long> values = new ArrayList<>();
+    //         // for(int i = 0; i<index.length;i++) System.out.println(index[i]);
+    //         values.add(Long.parseLong(parts[0].trim()));
+    //         for (String value : index) {
+    //             values.add(Long.parseLong(value.trim()));
+    //         }
+    //         dict.add(values);
+    //     }
+    //     return dict;
+    // }
 
     //////////////////////Problem 6/////////////////////
     // public static void main(String[] args) throws Exception {
