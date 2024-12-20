@@ -35,6 +35,9 @@ public class App {
         ArrayList<Integer> numbers = new ArrayList<Integer>();
         int cur = 0;
         for (int i = 0; i < file.length()-1; i++){
+            if(i == file.length()-3){
+                System.out.println("here");
+            }
             String sub = file.substring(i, i+1);
             int num = Integer.parseInt(sub);
             if(i%2==0){
@@ -57,10 +60,13 @@ public class App {
             i++;
         }
         // System.out.println(numbers);
-        int answer = 0; 
+        long answer = 0; 
+        ArrayList<Integer> test = new ArrayList<Integer>();
         for (int j = 0; j < numbers.size(); j++){
+            test.add(numbers.get(j)*j);
             answer+=numbers.get(j)*j;
         }
+        // System.out.println(test);
         System.out.println(answer);
 
     }
