@@ -29,47 +29,151 @@ public class App {
         return contentBuilder.toString();
     }
     
-    public static void main(String[] args) throws Exception{
-        String fileName = "Advent ofCode 2024 Java\\src\\Problem 9.txt";
+    public static void main(String[] args) throws Exception {
+        String fileName = "Advent ofCode 2024 Java\\src\\test.txt";
         String file = readF(fileName);
-        ArrayList<Integer> numbers = new ArrayList<Integer>();
-        int cur = 0;
-        for (int i = 0; i < file.length()-1; i++){
-            if(i == file.length()-3){
-                System.out.println("here");
-            }
-            String sub = file.substring(i, i+1);
-            int num = Integer.parseInt(sub);
-            if(i%2==0){
-                for (int j = 0; j<num; j++) numbers.add(cur);
-                cur++;
-            }
-            else for (int j = 0; j < num; j++) numbers.add(-1);
+        int size = file.indexOf("\n");
+        int[][] map =  new int[size][size];
+        for (int i = 0; i < file.length(); i++) {
+            if(file.charAt(i) == '\n') continue;
+            map[i%(size+1)][i/(size+1)] = Integer.parseInt(file.substring(i, i+1));
         }
-        // System.out.println(numbers);
-        int i = 0;
-        while (i < numbers.size()){
-            if(numbers.get(i) == -1){
-                while (numbers.get(numbers.size()-1) == -1){
-                    if (i == numbers.size()-1) break;
-                    numbers.remove(numbers.size()-1);
-                }
-                numbers.set(i, numbers.get(numbers.size()-1));
-                numbers.remove(numbers.size()-1);
-            }
-            i++;
-        }
-        // System.out.println(numbers);
-        long answer = 0; 
-        ArrayList<Integer> test = new ArrayList<Integer>();
-        for (int j = 0; j < numbers.size(); j++){
-            test.add(numbers.get(j)*j);
-            answer+=numbers.get(j)*j;
-        }
-        // System.out.println(test);
-        System.out.println(answer);
-
+        // for (int i = 0; i < size; i++){
+        //     for (int j = 0; j < size; j++){
+        //         System.out.print(map[j][i]);
+        //     }
+        //     System.out.println();
+        // }
+        
     }
+    // public static void main(String[] args) throws Exception{
+    //     String fileName = "Advent ofCode 2024 Java\\src\\Problem 9.txt";
+    //     String file = readF(fileName);
+    //     ArrayList<ArrayList<Integer>> numbers = new ArrayList<ArrayList<Integer>>();
+    //     // ArrayList<Integer> nums = new ArrayList<Integer>();
+    //     // ArrayList<Integer> blanks = new ArrayList<Integer>();
+    //     int cur = 0;
+
+    //     for (int i = 0; i < file.length()-1; i++) {
+    //         // if(i == file.length()-3){
+    //         //     System.out.println("here");
+    //         // }
+    //         String sub = file.substring(i, i+1);
+    //         int num = Integer.parseInt(sub);
+    //         if(i%2==0){
+    //             ArrayList<Integer> transfer = new ArrayList<Integer>();
+    //             transfer.add(cur);
+    //             transfer.add(num);
+    //             numbers.add(transfer);
+    //             cur++;
+    //         }
+    //         else {
+    //             ArrayList<Integer> transfer = new ArrayList<Integer>();
+    //             transfer.add(-1);
+    //             transfer.add(num);
+    //             numbers.add(transfer);
+    //         }
+    //     }
+    //     int count = (int)Math.ceil(numbers.size()/2.0);
+    //     // count--;
+    //     while (count > 0) {
+    //         count--;
+
+    //         //finds the file that needs to be moved
+    //         int i = 0;
+    //         while (numbers.get(i).get(0) != count) i++;
+    //         ArrayList<Integer> transfer = numbers.get(i);
+    //         int size = transfer.get(1);
+    //         int place = i;
+    //         i = 0;
+    //         boolean go = true;
+    //         ArrayList<Integer> current = numbers.get(i);
+    //         while(go){
+    //             if(current.get(0) == transfer.get(0)) break; 
+    //             if(current.get(0) == -1 && current.get(1) >= size) break;
+    //             i++;
+    //             current = numbers.get(i);
+    //         }
+    //         if(numbers.get(i).get(0) != count){
+    //             current.set(1, current.get(1) - size);
+    //             numbers.set(i, current);
+
+    //             //turns the place where the origional file was into a continuous blank area
+    //             numbers.remove(place);
+    //             ArrayList<Integer> placeHolder = new ArrayList<Integer>();
+    //             placeHolder.add(-1);
+    //             placeHolder.add(transfer.get(1)); 
+    //             if(numbers.size() > place && numbers.get(place).get(0) == -1) {
+    //                 placeHolder.set(1, placeHolder.get(1) + numbers.get(place).get(1));
+    //                 numbers.remove(place);
+    //             } 
+    //             if(numbers.get(place-1).get(0) == -1){
+    //                 placeHolder.set(1, placeHolder.get(1) + numbers.get(place-1).get(1));
+    //                 numbers.remove(place-1);
+    //                 numbers.add(place-1, placeHolder);
+    //             }
+    //             else{
+    //                 numbers.add(place, placeHolder);
+    //             }
+    //             numbers.add(i, transfer);
+    //         } 
+    //     }
+    //     // System.out.println(numbers);
+
+    //     ArrayList<Integer> nums = new ArrayList<Integer>();
+    //     for(int i = 0; i < numbers.size(); i++){
+    //         ArrayList<Integer> current = numbers.get(i);
+    //         int num = current.get(0);
+    //         for (int j = 0; j < current.get(1); j++){
+    //             nums.add(num);                
+    //         }
+    //     }
+    //     // System.out.println(nums);
+    //     Long answer = (long) 0;
+    //     for(int i = 0; i<nums.size();i++){
+    //         if(nums.get(i) >= 0){
+    //             answer+=i*nums.get(i);
+    //         }
+    //     }
+    //     System.out.println(answer);
+
+        // for (int i = 0; i < file.length()-1; i++){
+        //     if(i == file.length()-3){
+        //         System.out.println("here");
+        //     }
+        //     String sub = file.substring(i, i+1);
+        //     int num = Integer.parseInt(sub);
+        //     if(i%2==0){
+        //         for (int j = 0; j<num; j++) numbers.add(cur);
+        //         cur++;
+        //     }
+        //     else for (int j = 0; j < num; j++) numbers.add(-1);
+        // }
+        // // System.out.println(numbers);
+        // int i = 0;
+        
+        // while (i < numbers.size()){
+        //     if(numbers.get(i) == -1){
+        //         while (numbers.get(numbers.size()-1) == -1){
+        //             if (i == numbers.size()-1) break;
+        //             numbers.remove(numbers.size()-1);
+        //         }
+        //         numbers.set(i, numbers.get(numbers.size()-1));
+        //         numbers.remove(numbers.size()-1);
+        //     }
+        //     i++;
+        // }
+        // // System.out.println(numbers);
+        // long answer = 0; 
+        // ArrayList<Integer> test = new ArrayList<Integer>();
+        // for (int j = 0; j < numbers.size(); j++){
+        //     test.add(numbers.get(j)*j);
+        //     answer+=numbers.get(j)*j;
+        // }
+        // // System.out.println(test);
+        // System.out.println(answer);
+
+    // }
 
     ///////////////////Problem 8////////////////////////////
     // public static void main(String[] args) throws Exception {
