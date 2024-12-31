@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.BitSet;
 import java.util.Map;
+import java.util.Queue;
 import java.util.HashMap;
 
 
@@ -29,23 +31,150 @@ public class App {
         return contentBuilder.toString();
     }
     
-    public static void main(String[] args) throws Exception {
-        String fileName = "Advent ofCode 2024 Java\\src\\test.txt";
-        String file = readF(fileName);
-        int size = file.indexOf("\n");
-        int[][] map =  new int[size][size];
-        for (int i = 0; i < file.length(); i++) {
-            if(file.charAt(i) == '\n') continue;
-            map[i%(size+1)][i/(size+1)] = Integer.parseInt(file.substring(i, i+1));
+    // public static void floodFill(int x, int y, int[][] map){
+    //     if(x < 0 || x >= map.length) return;
+    //     if(y < 0 || y >= map.length) return;
+
+    //     floodFill(x, y+1, map);
+    //     floodFill(x+1, y, map);
+    //     floodFill(x, y-1, map);
+    //     floodFill(x-1, y, map);
+    // }
+    private static Map<Long, Map<Long, Long>> graph = new HashMap<>();
+    private static Set<Long> blinked = new HashSet<>();
+
+    public static void main(String[] args) throws IOException {
+        String file = readF("Advent ofCode 2024 Java/src/Problem 11.txt");
+        String[] words = file.trim().split(" ");
+        List<Long> input = new ArrayList<Long>();
+        for (String word : words) {
+            input.add(Long.parseLong(word));
         }
-        // for (int i = 0; i < size; i++){
-        //     for (int j = 0; j < size; j++){
-        //         System.out.print(map[j][i]);
-        //     }
-        //     System.out.println();
-        // }
-        
+        Queue<Long> stones = new ArrayDeque<>(input);
+        // process each stone and make graph
+        while (!stones.isEmpty()) {
+            long s = stones.poll();
+            if (blinked.contains(s)) {
+                continue;
+            }
+            processStone(s, stones);
+        }
+
+        System.out.println(blink(input, 75));
     }
+
+    private static void processStone(long s, Queue<Long> stones) {
+        if (s == 0) {
+            addEdge(s, 1, 1);
+            stones.add((long)1);
+        } else if (String.valueOf(s).length() % 2 == 0) {
+            int n = String.valueOf(s).length() / 2;
+            String sStr = String.valueOf(s);
+            long a = Long.parseLong(sStr.substring(0, n));
+            long b = Long.parseLong(sStr.substring(n));
+            if (a == b) {
+                addEdge(s, a, 2);
+            } else {
+                addEdge(s, a, 1);
+                addEdge(s, b, 1);
+            }
+            stones.add(a);
+            stones.add(b);
+        } else {
+            addEdge(s, s * 2024, 1);
+            stones.add(s * 2024);
+        }
+        blinked.add(s);
+    }
+
+    // Add an edge to the graph with a specific weight
+    private static void addEdge(long source, long target, long weight) {
+        graph.putIfAbsent(source, new HashMap<>());
+        graph.get(source).put(target, weight);
+    }
+
+    // Perform the blink transformation for 'n' iterations
+    private static long blink(List<Long> _stones, long n) {
+        Map<Long, Long> stones = new HashMap<>();
+        for (long s : _stones) {
+            stones.put(s, stones.getOrDefault(s, 0L) + 1);
+        }
+
+        for (int i = 0; i < n; i++) {
+            Map<Long, Long> updated = new HashMap<>();
+            for (Map.Entry<Long, Long> entry : stones.entrySet()) {
+                long s = entry.getKey();
+                long count = entry.getValue();
+                Map<Long, Long> edges = graph.get(s);
+                if (edges != null) {
+                    for (Map.Entry<Long, Long> edge : edges.entrySet()) {
+                        long target = edge.getKey();
+                        long weight = edge.getValue();
+                        updated.put(target, updated.getOrDefault(target, 0L) + count * weight);
+                    }
+                }
+            }
+            stones = updated;
+        }
+
+        // Sum up the final result
+        return stones.values().stream().mapToLong(Long::longValue).sum();
+    }
+
+    // public static void main(String[] args) throws Exception {
+    //     String fileName = "Advent ofCode 2024 Java\\src\\Problem 10.txt";
+    //     String file = readF(fileName);
+    //     int size = file.indexOf("\n");
+    //     int[][] map =  new int[size][size];
+    //     for (int i = 0; i < file.length(); i++) {
+    //         if(file.charAt(i) == '\n') continue;
+    //         map[i%(size+1)][i/(size+1)] = Integer.parseInt(file.substring(i, i+1));
+    //     }
+    //     int sum = 0;
+    //     for (int i = 0; i < map.length; i++) {
+    //         for (int j = 0; j < map.length; j++) {
+    //             if(map[i][j] == 0){
+    //                 int count = notFloodFill(i, j, map, -1, null, null);
+    //                 sum += count;
+    //             }
+    //         }
+    //     }
+    //     System.out.println(sum);
+    //     // for (int i = 0; i < size; i++){
+    //     //     for (int j = 0; j < size; j++){
+    //     //         System.out.print(map[j][i]);
+    //     //     }
+    //     //     System.out.println();
+    //     // }
+    // }
+    // public static int notFloodFill(int x, int y, int[][] map, int last, boolean[][] visited, Set<Integer> ind) {
+    //     if(x < 0 || y < 0 || x >= map.length || y >= map.length) return -1; //out of bounds error
+    //     int now = map[x][y]; // should be fine here
+
+    //     if (last == -1){ //the beginning
+    //         visited = new boolean[map.length][map.length];
+    //         ind = new HashSet<Integer>();
+
+    //         notFloodFill(x, y+1, map, now, visited, ind);
+    //         visited = new boolean[map.length][map.length];
+    //         notFloodFill(x+1, y, map, now, visited, ind);
+    //         visited = new boolean[map.length][map.length];
+    //         notFloodFill(x, y-1, map, now, visited, ind);
+    //         visited = new boolean[map.length][map.length];
+    //         notFloodFill(x-1, y, map, now, visited, ind);
+    //         return ind.size();
+    //     }
+    //     if(visited[x][y] == true) return -1;
+    //     if (now != last+1) return -1;
+    //     if(now == 9) ind.add(ind.size());
+
+    //     notFloodFill(x, y+1, map, now, visited, ind);
+    //     notFloodFill(x+1, y, map, now, visited, ind);
+    //     notFloodFill(x, y-1, map, now, visited, ind);
+    //     notFloodFill(x-1, y, map, now, visited, ind);
+    //     return -1;
+    // }
+    
     // public static void main(String[] args) throws Exception{
     //     String fileName = "Advent ofCode 2024 Java\\src\\Problem 9.txt";
     //     String file = readF(fileName);
