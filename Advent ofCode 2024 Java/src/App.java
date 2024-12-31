@@ -51,7 +51,6 @@ public class App {
             input.add(Long.parseLong(word));
         }
         Queue<Long> stones = new ArrayDeque<>(input);
-        // process each stone and make graph
         while (!stones.isEmpty()) {
             long s = stones.poll();
             if (blinked.contains(s)) {
@@ -87,13 +86,11 @@ public class App {
         blinked.add(s);
     }
 
-    // Add an edge to the graph with a specific weight
     private static void addEdge(long source, long target, long weight) {
         graph.putIfAbsent(source, new HashMap<>());
         graph.get(source).put(target, weight);
     }
 
-    // Perform the blink transformation for 'n' iterations
     private static long blink(List<Long> _stones, long n) {
         Map<Long, Long> stones = new HashMap<>();
         for (long s : _stones) {
@@ -117,7 +114,6 @@ public class App {
             stones = updated;
         }
 
-        // Sum up the final result
         return stones.values().stream().mapToLong(Long::longValue).sum();
     }
 
