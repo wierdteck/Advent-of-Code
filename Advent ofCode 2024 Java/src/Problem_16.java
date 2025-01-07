@@ -1,10 +1,11 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
-public class Problem_162 {
+public class Problem_16 {
     // PAIIIIIIIIIINNNNN I HATE THIS PROBLEM
     // WHY IS IT A GRAPH TRAVERSAL PROBLEM WAAAAAAAAHAWAAHAHHWAHHH
     // Update: graph traversal is actually quite interesting
@@ -53,6 +54,8 @@ public class Problem_162 {
             curr = curr.subList(1, 5);
             if (mazeCosts.get(curr) != null && mazeCosts.get(curr) < value)
                 continue;
+            // if (maze[y][x] == '#')
+            //     System.out.println("here");
             if (maze[y][x] == 'E') {
                 if (value > bestValue)
                     continue;
@@ -63,6 +66,9 @@ public class Problem_162 {
                 int nx = num[1], ny = num[2], nvalue = num[0];
                 List<Integer> part = Arrays.stream(num).boxed().toList();
                 part = part.subList(1, 5);
+                // if (ny == 138 && nx == 3){
+                //     System.out.println("here");
+                // }
                 if (maze[ny][nx] == '#')
                     continue;
                 if (mazeCosts.get(part) == null)
@@ -94,21 +100,34 @@ public class Problem_162 {
                 if (seen.contains(i)) continue;
                 seen.add(i);
                 backtrack.add(i);
-                maze[i.get(0)][i.get(1)] = 'X';
+                maze[i.get(1)][i.get(0)] = 'X';
             }
         }
+        int sum = 0;
         System.out.println(seen.size());
+        for (int i = 0; i < maze.length; i++) {
+            for (int j = 0; j < maze.length; j++) {
+                if (maze[i][j] == '.') maze[i][j] = ' ';
+                // if (maze[i][j] == '#') maze[i][j] = '.';
+                if (maze[i][j] == 'X') sum++;
+            }
+        }
+        System.err.println(sum);
         printMap(maze);
     }
 
     public static void printMap(char[][] map) {
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter("Advent ofCode 2024 Java/src/test2.txt"))) {
         for (char[] n : map) {
             for (char cs : n) {
-                System.out.print(cs);
+                writer.write(cs);
             }
-            System.out.println();
+            writer.newLine();
         }
+    } catch (IOException e) {
+        e.printStackTrace();
     }
+}
 
     public static String readF(String fileName) {
         StringBuilder contentBuilder = new StringBuilder();
