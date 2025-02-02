@@ -1,215 +1,119 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
-public class test {
-    public static String readF(String fileName){
-        StringBuilder contentBuilder = new StringBuilder();
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = br.readLine())!= null) {
-                contentBuilder.append(line).append("\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return contentBuilder.toString();
-    }
-    public static boolean moveRoboSide(int direction, ArrayList<ArrayList<Character>> map, int x, int y){
-        int vx = 0;
+public class test { 
 
-        if(direction == 1) vx = 1;
-        if(direction == 3) vx = -1;
+    private static int[] registers = new int[]{117440, 0, 0}; 
+    private static List<Integer> program;
+    private static List<Integer> output = new ArrayList<>();
 
-        if(map.get(y).get(x+vx) == '.'){
-            return true;
-        }
-        if(map.get(y).get(x+vx) == '#'){
-            return false;
-        }
-        if(map.get(y).get(x+vx) == ']' || map.get(y).get(x+vx) == '['){
-            int mul = 2;
-            while (map.get(y).get(x+vx*mul) != '#' && map.get(y).get(x+vx*mul) != '.') {
-                mul++;
-            }
-            if (map.get(y).get(x+vx*mul) == '#') {
-                return false;
-            }
-            if (map.get(y).get(x+vx*mul) == '.') {
-                for (int i = 0; i < mul; i++) {
-                    map.get(y).set(x+vx*(mul-i), map.get(y).get(x+vx*(mul-i-1)));
-                }
-                return true;
-            }
-        }
-        System.out.println("error");
-        return false;
-    }
-    
-    public static boolean moveRobo(int direction, ArrayList<ArrayList<Character>> map, int x, int y){
-        int vy = 0;
-
-        if(direction == 0) vy = 1;
-        if(direction == 2) vy = -1;
-
-        if(map.get(y+vy).get(x) == '.'){
-            return true;
-        }
-        if(map.get(y+vy).get(x) == '#'){
-            return false;
-        }
-        if((map.get(y+vy).get(x) == '[' || map.get(y+vy).get(x) == ']')){
-            if (checkPossible(direction, map, x, y)){
-                moveBoxes(direction, map, x, y);
-                return true;
-            }
-            else return false;
-        }
-
-        System.out.println("error");
-        return false;
+    public test(List<Integer> program) {
+        this.program = program;
     }
 
-    public static boolean checkPossible(int direction, ArrayList<ArrayList<Character>> map, int x, int y){
-        int vy = 0;
+    public void executeProgram() {
+        int instructionPointer = 0;
+        while (instructionPointer < program.size()) {
+            int opcode = program.get(instructionPointer);
+            int operand = (instructionPointer + 1 < program.size()) ? program.get(instructionPointer + 1) : 0;
+            int[] reg = registers;
+            List<Integer> out = output;
+            switch (opcode) {
+                case 0: // adv
+                    adv(operand);
+                    break;
+                case 1: // bxl
+                    bxl(operand);
+                    break;
+                case 2: // bst
+                    bst(operand);
+                    break;
+                case 3: // jnz
+                    if (registers[0] != 0) {
+                        instructionPointer = operand;
+                    } else {
+                        instructionPointer += 2;
+                    }
+                    continue;
+                case 4: // bxc
+                    bxc();
+                    break;
+                case 5: // out
+                    out(operand);
+                    break;
+                case 6: // bdv
+                    bdv(operand);
+                    break;
+                case 7: // cdv
+                    cdv(operand);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid opcode: " + opcode);
+            }
 
-        if(direction == 0) vy = 1;
-        if(direction == 2) vy = -1;
-        if(map.get(y+vy).get(x) == '#'){
-            return false;
-        }
-        if (map.get(y+vy).get(x) == '[') {
-            if (!checkPossible(direction, map, x, y+vy)) return false;
-            if (!checkPossible(direction, map, x+1, y+vy)) return false;
-        }
-        if(map.get(y+vy).get(x) == ']') {
-            if (!checkPossible(direction, map, x, y+vy)) return false;
-            if (!checkPossible(direction, map, x-1, y+vy)) return false;
-        }
-
-        return true;
-    }
-    public static void moveBoxes(int direction, ArrayList<ArrayList<Character>> map, int x, int y){
-        int vy = 0;
-
-        if(direction == 0) vy = 1;
-        if(direction == 2) vy = -1;
-        if (map.get(y+vy).get(x) == '[') {
-            // printMap(map);
-            moveBoxes(direction, map, x, y+vy);
-            // printMap(map);
-            map.get(y+vy*2).set(x, '[');
-            map.get(y+vy).set(x, '.');
-            // printMap(map);
-            moveBoxes(direction, map, x+1, y);
-            // printMap(map);
-        }
-        if(map.get(y+vy).get(x) == ']') {
-            // printMap(map);
-            moveBoxes(direction, map, x, y+vy);
-            // printMap(map);
-            map.get(y+vy*2).set(x, ']');
-            map.get(y+vy).set(x, '.');
-            // printMap(map);
-            moveBoxes(direction, map, x-1, y);
-            // printMap(map);
+            instructionPointer += 2;
         }
     }
-    public static void printMap(ArrayList<ArrayList<Character>> map) {
-        for (ArrayList<Character> row : map) {
-            for (Character cell : row) {
-                System.out.print(cell); // Print each character
-            }
-            System.out.println(); // Move to the next line after each row
+
+    private void adv(int operand) {
+        int denominator = (int) Math.pow(2, resolveComboOperand(operand));
+        registers[0] = registers[0] / denominator;
+    }
+
+    private void bxl(int operand) {
+        registers[1] ^= operand; 
+    }
+
+    private void bst(int operand) {
+        registers[1] = resolveComboOperand(operand) % 8; 
+    }
+
+    private void bxc() {
+        registers[1] ^= registers[2]; 
+    }
+
+    private void out(int operand) {
+        output.add(resolveComboOperand(operand) % 8); 
+    }
+
+    private void bdv(int operand) {
+        int denominator = (int) Math.pow(2, resolveComboOperand(operand));
+        registers[1] = registers[0] / denominator;
+    }
+
+    private void cdv(int operand) {
+        int denominator = (int) Math.pow(2, resolveComboOperand(operand));
+        registers[2] = registers[0] / denominator;
+    }
+
+    private int resolveComboOperand(int operand) {
+        if (operand <= 3) {
+            return operand; 
+        }
+        switch (operand) {
+            case 4:
+                return registers[0]; 
+            case 5:
+                return registers[1]; 
+            case 6:
+                return registers[2];
+            default:
+                throw new IllegalArgumentException("Invalid combo operand: " + operand);
         }
     }
-    
-    public static void main(String args[]) throws IOException {
-        String file = readF("Advent ofCode 2024 Java\\src\\test.txt");
-        String[] input = file.split("\n");
-        int x = 0;
-        int y = 0;
-        ArrayList<ArrayList<Character>> map = new ArrayList<ArrayList<Character>>();
-        for (int i = 0; i < 10; i++) {
-            String line = input[i];
-            ArrayList<Character> row = new ArrayList<Character>();
-            for (char c : line.toCharArray()) {
-                if(c == '.' || c == '#'){
-                    row.add(c);
-                    row.add(c);
-                }
-                if(c == '@'){
-                    row.add(c);
-                    row.add('.');
-                    x = line.indexOf("@")*2;
-                    y = i;
-                }
-                if(c == 'O'){
-                    row.add('[');
-                    row.add(']');
-                }
-            }
-            map.add(row);
-        }
-        printMap(map);
-        // System.out.println(map);
-        ArrayList<Character> moves = new ArrayList<Character>();
-        for (int i = 11; i < 21; i++){
-            String line = input[i];
-            for (Character character : line.toCharArray()) {
-                moves.add(character);
-            }
-        }
-        // System.out.println(moves);
-        // System.out.println(x + " " + y);
 
-        int i = 0;
-        boolean done = false;
-        for (Character character : moves) {
-            // System.out.println(i);
-            // System.out.println(map);
-            i++;
-            if (i == 356){
-                System.out.println("error");
-                printMap(map);
-            }
-            if(character.equals('v') && moveRobo(0, map, x, y)){
-                map.get(y).set(x, '.');
-                y+=1;
-                map.get(y).set(x, '@');
-            }
-            if(character.equals('>') && moveRoboSide(1, map, x, y)){
-                map.get(y).set(x, '.');
-                x+=1;
-                map.get(y).set(x, '@');
-            }
-            if(character.equals('^') && moveRobo(2, map, x, y)){
-                map.get(y).set(x, '.');
-                y-=1;
-                map.get(y).set(x, '@');
-            }
-            if(character.equals('<') && moveRoboSide(3, map, x, y)){
-                map.get(y).set(x, '.');
-                x-=1;
-                map.get(y).set(x, '@');
-            }
-            // if (map.get(0).get(16)!='#' && !done) {
-            //     System.out.println(i);
-            //     done = true;
-            //     printMap(map);
-            // }
+    public static void main(String[] args) {
+        List<Integer> program = List.of(2,4,1,5,7,5,1,6,0,3,4,2,5,5,3,0);
+        int length = 1;
+        test computer = new test(program);
+        for (int i = (int)Math.pow(8, length-1)-1                            ; i < (int)Math.pow(8, length); i++) {
+            registers = new int[]{i, 0, 0};
+            output = new ArrayList<>();
+            computer.executeProgram();
+
+                
+            System.out.println("Output: " + output);
+            System.out.println(i);
         }
-        // printMap(map);
-        int sum = 0;
-        // System.out.println(map);
-        for (int j = 0; j < map.size(); j++) {
-            for (int j2 = 0; j2 < map.get(j).size(); j2++) {
-                if(map.get(j).get(j2) == '['){
-                    sum+=j*100+j2;
-                }
-            }
-        }
-        System.out.println(sum);
     }
 }

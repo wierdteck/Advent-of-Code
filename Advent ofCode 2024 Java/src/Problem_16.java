@@ -117,17 +117,17 @@ public class Problem_16 {
     }
 
     public static void printMap(char[][] map) {
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter("Advent ofCode 2024 Java/src/test2.txt"))) {
-        for (char[] n : map) {
-            for (char cs : n) {
-                writer.write(cs);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Advent ofCode 2024 Java/src/test2.txt"))) {
+            for (char[] n : map) {
+                for (char cs : n) {
+                    writer.write(cs);
+                }
+                writer.newLine();
             }
-            writer.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    } catch (IOException e) {
-        e.printStackTrace();
     }
-}
 
     public static String readF(String fileName) {
         StringBuilder contentBuilder = new StringBuilder();
